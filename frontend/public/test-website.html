@@ -1,261 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Demo Electronics Co. — Widget Test</title>
-    <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-      }
-      body {
-        background: #f9fafb;
-        color: #111827;
-        padding: 40px 20px 100px;
-      }
-      .page {
-        max-width: 640px;
-        margin: 0 auto;
-      }
 
-      .page h1 {
-        font-size: 22px;
-        font-weight: 700;
-        margin-bottom: 6px;
-      }
-      .page > p.intro {
-        font-size: 14px;
-        color: #6b7280;
-        line-height: 1.6;
-        margin-bottom: 28px;
-      }
-      .kb-heading {
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: #6b7280;
-        margin-bottom: 10px;
-      }
-      .article {
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 10px;
-        margin-bottom: 10px;
-        overflow: hidden;
-      }
-      .article summary {
-        list-style: none;
-        cursor: pointer;
-        padding: 14px 16px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        font-size: 14px;
-        font-weight: 600;
-        color: #111827;
-      }
-      .article summary::-webkit-details-marker {
-        display: none;
-      }
-      .article summary .chevron {
-        flex-shrink: 0;
-        transition: transform 0.15s ease;
-        color: #9ca3af;
-      }
-      .article[open] summary .chevron {
-        transform: rotate(90deg);
-      }
-      .article summary:hover {
-        background: #f9fafb;
-      }
-      .article .body {
-        padding: 0 16px 16px;
-        font-size: 13px;
-        line-height: 1.7;
-        color: #374151;
-        border-top: 1px solid #f3f4f6;
-        padding-top: 12px;
-      }
-      .try-heading {
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: #6b7280;
-        margin: 28px 0 10px;
-      }
-      .try-list {
-        list-style: none;
-      }
-      .try-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        padding: 10px 12px;
-        font-size: 13px;
-        color: #374151;
-        border-bottom: 1px solid #e5e7eb;
-      }
-      .try-item:last-child {
-        border-bottom: none;
-      }
-      .copy-btn {
-        flex-shrink: 0;
-        width: 26px;
-        height: 26px;
-        border: none;
-        background: transparent;
-        color: #9ca3af;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 6px;
-      }
-      .copy-btn:hover {
-        background: #f3f4f6;
-        color: #374151;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="page">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <title>Demo Electronics Co. — Widget Test</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    }
 
-      <h1>Demo Electronics Co.</h1>
-      <p class="intro">
-        These are the demo support articles the AI reads from. Ask a related
-        question in the chat widget (bottom-right) and compare its answer
-        against the article content below.
-      </p>
+    body {
+      background: #f9fafb;
+      color: #111827;
+      padding: 40px 20px 100px;
+    }
 
-      <p class="kb-heading">Support Articles</p>
+    .page {
+      max-width: 640px;
+      margin: 0 auto;
+    }
 
-      <details class="article" open>
-        <summary>
-          Shipping Policy
-          <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-        </summary>
-        <div class="body">
-          Standard shipping within Pakistan takes 3-5 business days and is free on
-          orders over PKR 5,000. Orders under that have a flat shipping fee of PKR 250.
-          Express shipping is available at checkout for an additional PKR 600 and
-          delivers within 1-2 business days in major cities. Once your order ships,
-          you'll receive a tracking number by email within 24 hours. Orders placed
-          before 3 PM on business days are processed the same day; orders placed on
-          weekends or holidays are processed the next business day.
-        </div>
-      </details>
+    .page h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
 
-      <details class="article">
-        <summary>
-          Return &amp; Refund Policy
-          <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-        </summary>
-        <div class="body">
-          We accept returns within 14 days of delivery for any item in its original,
-          unopened packaging. To start a return, contact support with your order
-          number and reason for return. Once we receive and inspect the item, refunds
-          are issued to the original payment method within 5-7 business days. Original
-          shipping costs are non-refundable, and customers cover return shipping unless
-          the item arrived damaged or defective. Earphones and other in-ear audio
-          products cannot be returned once the packaging seal is broken, for hygiene
-          reasons — this applies even within the 14-day window.
-        </div>
-      </details>
+    .page>p.intro {
+      font-size: 14px;
+      color: #6b7280;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
 
-      <details class="article">
-        <summary>
-          Warranty Policy
-          <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-        </summary>
-        <div class="body">
-          All products come with a 1-year manufacturer's warranty covering defects in
-          materials and workmanship under normal use. This does not cover accidental
-          damage, water damage outside the product's rated resistance, unauthorized
-          repairs, or normal wear like battery capacity loss after 12+ months of use.
-          To make a claim, contact support with your order number, a description of
-          the issue, and photos or a short video of the defect. Approved claims are
-          resolved with a free repair, replacement, or store credit, at our discretion.
-          The warranty is tied to the original purchaser and is not transferable.
-        </div>
-      </details>
+    .kb-heading {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #6b7280;
+      margin-bottom: 10px;
+    }
 
-      <details class="article">
-        <summary>
-          Order Cancellation Policy
-          <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-        </summary>
-        <div class="body">
-          Orders can be cancelled free of charge within 1 hour of being placed, as
-          long as the order hasn't entered processing yet. To cancel, go to "My
-          Orders" and select "Cancel Order," or contact support with your order
-          number. Once an order has shipped, it can no longer be cancelled — use the
-          return process instead once it arrives. Pre-order items cannot be cancelled
-          once the pre-order window has closed, even within the 1-hour rule.
-        </div>
-      </details>
+    .article {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
 
-      <details class="article">
-        <summary>
-          Payment Methods &amp; Billing
-          <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-        </summary>
-        <div class="body">
-          We accept debit/credit cards, bank transfer, and cash on delivery (COD) for
-          orders under PKR 20,000. Card and bank transfer payments are charged in full
-          at checkout; COD orders are paid at the time of delivery. If a card payment
-          fails, the order is not created and no partial charge occurs. We do not store
-          full card numbers — all card payments are processed through a PCI-compliant
-          third-party payment gateway.
-        </div>
-      </details>
+    .article summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #111827;
+    }
 
-      <p class="try-heading">Try asking the widget</p>
-      <ul class="try-list">
-        <li class="try-item">
-          <span>Can I return earphones if I already opened the box?</span>
-          <button class="copy-btn" type="button" data-copy="Can I return earphones if I already opened the box?" aria-label="Copy question">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          </button>
-        </li>
-        <li class="try-item">
-          <span>Does the warranty cover a dead battery after a year?</span>
-          <button class="copy-btn" type="button" data-copy="Does the warranty cover a dead battery after a year?" aria-label="Copy question">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          </button>
-        </li>
-        <li class="try-item">
-          <span>Can I cancel my order two hours after placing it?</span>
-          <button class="copy-btn" type="button" data-copy="Can I cancel my order two hours after placing it?" aria-label="Copy question">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          </button>
-        </li>
-        <li class="try-item">
-          <span>Do you accept cash on delivery for a PKR 25,000 order?</span>
-          <button class="copy-btn" type="button" data-copy="Do you accept cash on delivery for a PKR 25,000 order?" aria-label="Copy question">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          </button>
-        </li>
-      </ul>
-    </div>
+    .article summary::-webkit-details-marker {
+      display: none;
+    }
 
-    <script src="https://www.resolvio.dev/widget.js"></script>
-    <script>
-      window.addEventListener('load', function () {
-        Resolvio.init({ apiKey: "6cb529a8-3bdf-41aa-8b81-0af0cee6acf3" });
+    .article summary .chevron {
+      flex-shrink: 0;
+      transition: transform 0.15s ease;
+      color: #9ca3af;
+    }
+
+    .article[open] summary .chevron {
+      transform: rotate(90deg);
+    }
+
+    .article summary:hover {
+      background: #f9fafb;
+    }
+
+    .article .body {
+      padding: 0 16px 16px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #374151;
+      border-top: 1px solid #f3f4f6;
+      padding-top: 12px;
+    }
+
+    .try-heading {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #6b7280;
+      margin: 28px 0 10px;
+    }
+
+    .try-list {
+      list-style: none;
+    }
+
+    .try-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: #374151;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .try-item:last-child {
+      border-bottom: none;
+    }
+
+    .copy-btn {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      border: none;
+      background: transparent;
+      color: #9ca3af;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+    }
+
+    .copy-btn:hover {
+      background: #f3f4f6;
+      color: #374151;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <h1>Demo Electronics Co.</h1>
+    <p class="intro">
+      These are the demo support articles the AI reads from. Ask a related
+      question in the chat widget (bottom-right) and compare its answer
+      against the article content below.
+    </p>
+
+    <p class="kb-heading">Support Articles</p>
+
+    <details class="article" open>
+      <summary>
+        Shipping Policy
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </summary>
+      <div class="body">
+        Standard shipping within Pakistan takes 3-5 business days and is free on
+        orders over PKR 5,000. Orders under that have a flat shipping fee of PKR 250.
+        Express shipping is available at checkout for an additional PKR 600 and
+        delivers within 1-2 business days in major cities. Once your order ships,
+        you'll receive a tracking number by email within 24 hours. Orders placed
+        before 3 PM on business days are processed the same day; orders placed on
+        weekends or holidays are processed the next business day.
+      </div>
+    </details>
+
+    <details class="article">
+      <summary>
+        Return &amp; Refund Policy
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </summary>
+      <div class="body">
+        We accept returns within 14 days of delivery for any item in its original,
+        unopened packaging. To start a return, contact support with your order
+        number and reason for return. Once we receive and inspect the item, refunds
+        are issued to the original payment method within 5-7 business days. Original
+        shipping costs are non-refundable, and customers cover return shipping unless
+        the item arrived damaged or defective. Earphones and other in-ear audio
+        products cannot be returned once the packaging seal is broken, for hygiene
+        reasons — this applies even within the 14-day window.
+      </div>
+    </details>
+
+    <details class="article">
+      <summary>
+        Warranty Policy
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </summary>
+      <div class="body">
+        All products come with a 1-year manufacturer's warranty covering defects in
+        materials and workmanship under normal use. This does not cover accidental
+        damage, water damage outside the product's rated resistance, unauthorized
+        repairs, or normal wear like battery capacity loss after 12+ months of use.
+        To make a claim, contact support with your order number, a description of
+        the issue, and photos or a short video of the defect. Approved claims are
+        resolved with a free repair, replacement, or store credit, at our discretion.
+        The warranty is tied to the original purchaser and is not transferable.
+      </div>
+    </details>
+
+    <details class="article">
+      <summary>
+        Order Cancellation Policy
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </summary>
+      <div class="body">
+        Orders can be cancelled free of charge within 1 hour of being placed, as
+        long as the order hasn't entered processing yet. To cancel, go to "My
+        Orders" and select "Cancel Order," or contact support with your order
+        number. Once an order has shipped, it can no longer be cancelled — use the
+        return process instead once it arrives. Pre-order items cannot be cancelled
+        once the pre-order window has closed, even within the 1-hour rule.
+      </div>
+    </details>
+
+    <details class="article">
+      <summary>
+        Payment Methods &amp; Billing
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </summary>
+      <div class="body">
+        We accept debit/credit cards, bank transfer, and cash on delivery (COD) for
+        orders under PKR 20,000. Card and bank transfer payments are charged in full
+        at checkout; COD orders are paid at the time of delivery. If a card payment
+        fails, the order is not created and no partial charge occurs. We do not store
+        full card numbers — all card payments are processed through a PCI-compliant
+        third-party payment gateway.
+      </div>
+    </details>
+
+    <p class="try-heading">Try asking the widget</p>
+    <ul class="try-list">
+      <li class="try-item">
+        <span>Can I return earphones if I already opened the box?</span>
+        <button class="copy-btn" type="button" data-copy="Can I return earphones if I already opened the box?"
+          aria-label="Copy question">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </li>
+      <li class="try-item">
+        <span>Does the warranty cover a dead battery after a year?</span>
+        <button class="copy-btn" type="button" data-copy="Does the warranty cover a dead battery after a year?"
+          aria-label="Copy question">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </li>
+      <li class="try-item">
+        <span>Can I cancel my order two hours after placing it?</span>
+        <button class="copy-btn" type="button" data-copy="Can I cancel my order two hours after placing it?"
+          aria-label="Copy question">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </li>
+      <li class="try-item">
+        <span>Do you accept cash on delivery for a PKR 25,000 order?</span>
+        <button class="copy-btn" type="button" data-copy="Do you accept cash on delivery for a PKR 25,000 order?"
+          aria-label="Copy question">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <script src="https://www.resolvio.dev/widget.js"></script>
+  <script>
+    window.addEventListener('load', function () {
+      Resolvio.init({ apiKey: "b1b299fc-7f86-41df-8e3c-8e294afe9721" });
+    });
+    document.querySelectorAll('.copy-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        navigator.clipboard.writeText(btn.getAttribute('data-copy'));
       });
-      document.querySelectorAll('.copy-btn').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          navigator.clipboard.writeText(btn.getAttribute('data-copy'));
-        });
-      });
-    </script>
-  </body>
+    });
+  </script>
+</body>
+
 </html>
