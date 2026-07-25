@@ -336,6 +336,7 @@ export function ChatWidget({ apiKey }) {
       setMessages(ticket.messages);
       setTicketStatus(ticket.status);
       setHasEmail(Boolean(ticket.customer_email));
+      setNeedsEmail(Boolean(ticket.needs_email));
     } catch {
       localStorage.removeItem(STORAGE_KEY);
     } finally {
@@ -357,6 +358,7 @@ export function ChatWidget({ apiKey }) {
       setMessages(ticket.messages);
       setTicketStatus(ticket.status);
       setHasEmail(Boolean(ticket.customer_email));
+      setNeedsEmail(Boolean(ticket.needs_email));
       setFirstMessage("");
       if (firstMessageRef.current) firstMessageRef.current.style.height = "auto";
     } catch {

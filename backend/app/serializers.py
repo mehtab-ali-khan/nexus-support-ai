@@ -210,6 +210,7 @@ class CustomerTicketDetailSerializer(serializers.ModelSerializer):
             "category",
             "is_new",
             "customer_email",
+            "needs_email",
             "created_at",
             "messages",
         ]
@@ -236,6 +237,12 @@ class CustomerEmailUpdateSerializer(serializers.ModelSerializer):
                 "An email has already been provided for this ticket."
             )
         return value
+
+    def update(self, instance, validated_data):
+        instance.customer_email = validated_data["customer_email"]
+        instance.needs_email = False
+        instance.save(update_fields=["customer_email", "needs_email"])
+        return instance
 
 
 class TicketMessageSerializer(serializers.Serializer):

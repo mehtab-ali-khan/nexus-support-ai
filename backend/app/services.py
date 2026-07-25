@@ -137,6 +137,8 @@ def _attempt_ai_reply(*, ticket, customer_message):
         )
 
         if not ticket.customer_email:
+            ticket.needs_email = True
+            ticket.save(update_fields=["needs_email"])
             _push_to_widget(
                 ticket.id,
                 {"type": "request_email"},
