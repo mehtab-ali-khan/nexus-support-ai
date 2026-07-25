@@ -67,7 +67,7 @@ const styles = `
 
   .nw-dot {
     display: inline-block;
-    width: 5px; height: 5px;
+    width: 3px; height: 3px;
     border-radius: 50%;
     background: var(--nw-g-500);
     animation: nw-dot 1.2s ease infinite;
@@ -224,7 +224,6 @@ function MessageBubble({ msg }) {
           fontSize: "11px",
           fontWeight: 700,
           letterSpacing: "0.04em",
-          textTransform: "uppercase",
           color: fromTeam ? "var(--nw-g-600)" : "var(--nw-s-mid)",
         }}>
           {senderLabel}
@@ -250,15 +249,13 @@ function TypingIndicator() {
         background: "#ffffff",
         border: "1px solid var(--nw-g-300)",
         boxShadow: "var(--nw-shadow-sm)",
-        display: "flex", alignItems: "center", gap: "6px",
+        display: "flex", alignItems: "center", gap: "3px",
       }}>
         <span className="nw-dot" />
         <span className="nw-dot" />
         <span className="nw-dot" />
       </div>
-      <span style={{ fontSize: "10px", color: "var(--nw-g-500)", padding: "0 4px" }}>
-        AI is typing…
-      </span>
+
     </div>
   );
 }
@@ -553,7 +550,7 @@ export function ChatWidget({ apiKey }) {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <p style={{ fontSize: "16px", fontWeight: "600", color: "var(--nw-s)", lineHeight: 1.2 }}>
-            SUPPORT
+            Support
           </p>
           {accessToken && ticketStatus && <StatusPill status={ticketStatus} />}
         </div>
