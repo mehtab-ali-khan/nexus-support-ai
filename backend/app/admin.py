@@ -20,7 +20,8 @@ from .models import (
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
-    list_display = ("id", "message_preview", "status", "created_at")
+    list_display = ("message_preview", "status", "created_at")
+    list_display_links = ("message_preview",)
     list_filter = ("status",)
     search_fields = ("messages__body",)
 
@@ -38,13 +39,15 @@ class TicketAdmin(admin.ModelAdmin):
 
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ("id", "ticket", "sender_type", "is_internal", "created_at")
+    list_display = ("ticket", "sender_type", "is_internal", "created_at")
+    list_display_links = ("ticket",)
     list_filter = ("sender_type", "is_internal")
 
 
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "api_key", "created_at")
+    list_display = ("name", "api_key", "created_at")
+    list_display_links = ("name",)
     search_fields = ("name",)
 
 
@@ -52,6 +55,7 @@ class CompanyAdmin(admin.ModelAdmin):
 class UserAdmin(DjangoUserAdmin):
     model = User
     list_display = ("email", "first_name", "last_name", "role", "company", "is_staff")
+    list_display_links = ("email",)
     list_filter = ("role", "is_staff")
     ordering = ("email",)
     fieldsets = (
@@ -72,13 +76,13 @@ class UserAdmin(DjangoUserAdmin):
 @admin.register(KnowledgeBaseArticle)
 class KnowledgeBaseArticleAdmin(admin.ModelAdmin):
     list_display = (
-        "id",
         "title",
         "company",
         "index_status",
         "chunk_count",
         "updated_at",
     )
+    list_display_links = ("title",)
     list_filter = ("index_status", "company")
     search_fields = ("title", "body")
 
@@ -90,7 +94,8 @@ class KnowledgeBaseArticleAdmin(admin.ModelAdmin):
 
 @admin.register(ArticleChunk)
 class ArticleChunkAdmin(admin.ModelAdmin):
-    list_display = ("id", "article", "chunk_index", "company", "created_at")
+    list_display = ("article", "chunk_index", "company", "created_at")
+    list_display_links = ("article",)
     list_filter = ("company",)
     search_fields = ("content",)
     readonly_fields = ("embedding",)
@@ -106,6 +111,7 @@ class AIModelPricingAdmin(admin.ModelAdmin):
         "is_active",
         "created_at",
     )
+    list_display_links = ("provider",)
     list_filter = ("provider", "is_active")
     search_fields = ("model_name",)
 
@@ -124,6 +130,7 @@ class AIUsageLogAdmin(admin.ModelAdmin):
         "cost",
         "created_at",
     )
+    list_display_links = ("company",)
     list_filter = ("company", "provider", "model_name", "purpose")
     date_hierarchy = "created_at"
     search_fields = ("company__name",)
