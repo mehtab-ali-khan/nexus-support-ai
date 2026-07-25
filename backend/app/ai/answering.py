@@ -15,7 +15,7 @@ TOP_K = 5
 SIMILARITY_THRESHOLD = 0.5
 CONFIDENCE_THRESHOLD = 70
 
-CONNECTING_MESSAGE = "I don't want to guess on this one — I've flagged it for our support team, and they'll get back to you shortly."
+CONNECTING_MESSAGE = "Our support team has been notified and will follow up shortly."
 
 
 @dataclass
