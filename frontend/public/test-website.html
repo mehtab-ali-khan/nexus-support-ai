@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <title>Demo Electronics Co. — Widget Test</title>
+  <title>Demo Electronics Co. — Widget Demo</title>
   <style>
     * {
       box-sizing: border-box;
@@ -15,8 +15,6 @@
     }
 
     body {
-      background: #f9fafb;
-      color: #111827;
       padding: 40px 20px 100px;
     }
 
@@ -150,7 +148,7 @@
     <h1>Demo Electronics Co.</h1>
     <p class="intro">
       These are the demo support articles the AI reads from. Ask a related
-      question in the chat widget (bottom-right) and compare its answer
+      question in the chat widget bottom-right and compare its answer
       against the article content below.
     </p>
 
@@ -301,9 +299,28 @@
     window.addEventListener('load', function () {
       Resolvio.init({ apiKey: "b1b299fc-7f86-41df-8e3c-8e294afe9721" });
     });
+    const copyIcon = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+        `;
+
+    const checkIcon = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 6L9 17l-5-5"/>
+          </svg>
+        `;
     document.querySelectorAll('.copy-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        navigator.clipboard.writeText(btn.getAttribute('data-copy'));
+      btn.addEventListener('click', async function () {
+        await navigator.clipboard.writeText(btn.getAttribute('data-copy'));
+
+        btn.innerHTML = checkIcon;
+
+        clearTimeout(btn._copyTimeout);
+        btn._copyTimeout = setTimeout(() => {
+          btn.innerHTML = copyIcon;
+        }, 1000);
       });
     });
   </script>
