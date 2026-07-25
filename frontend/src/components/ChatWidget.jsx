@@ -1,7 +1,7 @@
 // frontend/src/components/ChatWidget.jsx
 
 import { useEffect, useRef, useState } from "react";
-import { createCustomerMessage, createTicket, getTicketByToken, submitTicketEmail } from "../api/tickets.js";
+import { createCustomerMessage, createTicket, getTicketByToken, submitTicketEmail, skipTicketEmail } from "../api/tickets.js";
 import { useWebSocket } from "../hooks/useWebSocket.js";
 
 const STORAGE_KEY = "resolvio_ticket_token";
@@ -281,6 +281,7 @@ export function ChatWidget({ apiKey }) {
   const [hasEmail, setHasEmail] = useState(false);
   const [emailInput, setEmailInput] = useState("");
   const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
+  const [emailJustSubmitted, setEmailJustSubmitted] = useState(false);
   const [emailError, setEmailError] = useState("");
 
   const messagesEndRef = useRef(null);
@@ -453,10 +454,29 @@ export function ChatWidget({ apiKey }) {
     try {
       await submitTicketEmail(accessToken, trimmed);
       setHasEmail(true);
+      setEmailInput("");
+      setEmailJustSubmitted(true);
+
+      // Show the "thanks" message briefly, then close the email form
+      setTimeout(() => {
+        setNeedsEmail(false);
+        setEmailJustSubmitted(false);
+      }, 1500);
+    } catch (err) {
+      setEmailError(err.message || "Could not save your email. Please try again.");
+    } finally {
+      setIsSubmittingEmail(false);
+    }
+  }
+  async function skipEmail() {
+    setEmailError("");
+    setIsSubmittingEmail(true);
+    try {
+      await skipTicketEmail(accessToken);
       setNeedsEmail(false);
       setEmailInput("");
     } catch (err) {
-      setEmailError(err.message || "Could not save your email. Please try again.");
+      setEmailError(err.message || "Could not skip right now. Please try again.");
     } finally {
       setIsSubmittingEmail(false);
     }
@@ -702,56 +722,101 @@ export function ChatWidget({ apiKey }) {
                 flexShrink: 0,
                 display: "flex",
                 flexDirection: "column",
-                gap: "8px",
+                gap: "10px",
               }}
             >
-              <p style={{ fontSize: "12px", color: "var(--nw-p-strong)", fontWeight: "600", lineHeight: 1.5 }}>
-                Please leave your email so our team can follow up with you.
-              </p>
-              <div style={{ display: "flex", gap: "8px" }}>
-                <input
-                  type="email"
-                  required
-                  value={emailInput}
-                  onChange={e => setEmailInput(e.target.value)}
-                  placeholder="you@example.com"
-                  autoFocus
-                  style={{
-                    flex: 1,
-                    padding: "9px 12px",
-                    borderRadius: "8px",
-                    border: "1px solid var(--nw-g-300)",
-                    fontSize: "14px",
-                    color: "var(--nw-s)",
-                    background: "#ffffff",
-                    outline: "none",
-                    fontFamily: "inherit",
-                  }}
-                />
-                <button
-                  type="submit"
-                  disabled={isSubmittingEmail || !emailInput.trim()}
-                  style={{
-                    padding: "9px 16px",
-                    borderRadius: "8px",
-                    background: "var(--nw-p)",
-                    color: "white",
-                    fontSize: "13px",
-                    fontWeight: "600",
-                    border: "none",
-                    cursor: isSubmittingEmail ? "wait" : "pointer",
-                    opacity: isSubmittingEmail || !emailInput.trim() ? 0.6 : 1,
-                    flexShrink: 0,
-                  }}
-                >
-                  {isSubmittingEmail ? "Saving…" : "Submit"}
-                </button>
-              </div>
-              {emailError && (
-                <p style={{ fontSize: "12px", color: "var(--danger, #dc2626)" }}>{emailError}</p>
+              {emailJustSubmitted ? (
+                // ── Success message — shown briefly after submitting ──
+                <p style={{
+                  fontSize: "13px",
+                  color: "var(--nw-success)",
+                  fontWeight: "600",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  Thanks! We'll follow up by email.
+                </p>
+              ) : (
+                <>
+                  <p style={{ fontSize: "12px", color: "var(--nw-p-strong)", fontWeight: "600", lineHeight: 1.5 }}>
+                    Please leave your email so our team can follow up with you.
+                  </p>
+
+                  {/* ── Email input — full width, own row ── */}
+                  <input
+                    type="email"
+                    required
+                    value={emailInput}
+                    onChange={e => setEmailInput(e.target.value)}
+                    placeholder="you@example.com"
+                    autoFocus
+                    style={{
+                      width: "100%",
+                      padding: "9px 12px",
+                      borderRadius: "8px",
+                      border: "1px solid var(--nw-g-300)",
+                      fontSize: "14px",
+                      color: "var(--nw-s)",
+                      background: "#ffffff",
+                      outline: "none",
+                      fontFamily: "inherit",
+                    }}
+                  />
+
+                  {/* ── Submit + Skip buttons — side by side, below the input ── */}
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    <button
+                      type="submit"
+                      disabled={isSubmittingEmail || !emailInput.trim()}
+                      style={{
+                        flex: 1,
+                        padding: "9px 16px",
+                        borderRadius: "8px",
+                        background: "var(--nw-p)",
+                        color: "white",
+                        fontSize: "13px",
+                        fontWeight: "600",
+                        border: "none",
+                        cursor: isSubmittingEmail ? "wait" : "pointer",
+                        opacity: isSubmittingEmail || !emailInput.trim() ? 0.6 : 1,
+                      }}
+                    >
+                      {isSubmittingEmail ? "Saving…" : "Submit"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={skipEmail}
+                      disabled={isSubmittingEmail}
+                      style={{
+                        flex: 1,
+                        padding: "9px 16px",
+                        borderRadius: "8px",
+                        background: "#ffffff",
+                        color: "var(--nw-g-600)",
+                        fontSize: "13px",
+                        fontWeight: "600",
+                        border: "1px solid var(--nw-g-300)",
+                        cursor: isSubmittingEmail ? "not-allowed" : "pointer",
+                        opacity: isSubmittingEmail ? 0.6 : 1,
+                      }}
+                    >
+                      Skip for now
+                    </button>
+                  </div>
+
+                  {emailError && (
+                    <p style={{ fontSize: "12px", color: "var(--danger, #dc2626)" }}>{emailError}</p>
+                  )}
+                </>
               )}
             </form>
           ) : (
+            // ...your existing reply box stays exactly the same here
             <div style={{
               padding: "10px 12px",
               background: "#ffffff",

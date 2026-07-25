@@ -117,7 +117,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_THROTTLE_RATES": {
-        "ticket_create": "2/hour",
+        "ticket_create": "5/hour",
         "customer_message": "20/hour",
         "ticket_list": "120/minute",
     },

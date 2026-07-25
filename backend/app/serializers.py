@@ -222,14 +222,17 @@ class CustomerTicketDetailSerializer(serializers.ModelSerializer):
 
 class CustomerEmailUpdateSerializer(serializers.ModelSerializer):
     """
-    Used only for the customer submitting their email after an escalation.
-    Rejects the update if this ticket already has an email on file, so the
-    same endpoint can't be replayed to silently overwrite it later.
+    Used for two customer actions on a ticket:
+    1. Submitting their email after an escalation (customer_email is set).
+    2. Skipping the email request (needs_email is set to False, no email saved).
+
+    Rejects re-submitting an email if one is already on file, so the same
+    endpoint can't be replayed to silently overwrite it later.
     """
 
     class Meta:
         model = Ticket
-        fields = ["customer_email"]
+        fields = ["customer_email", "needs_email"]
 
     def validate_customer_email(self, value):
         if self.instance and self.instance.customer_email:
@@ -238,8 +241,15 @@ class CustomerEmailUpdateSerializer(serializers.ModelSerializer):
             )
         return value
 
+    def validate_needs_email(self, value):
+        if value is not False:
+            raise serializers.ValidationError("Invalid value for needs_email.")
+        return value
+
     def update(self, instance, validated_data):
-        instance.customer_email = validated_data["customer_email"]
+        email = validated_data.get("customer_email")
+        if email:
+            instance.customer_email = email
         instance.needs_email = False
         instance.save(update_fields=["customer_email", "needs_email"])
         return instance

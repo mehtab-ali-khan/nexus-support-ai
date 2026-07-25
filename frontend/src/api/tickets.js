@@ -152,6 +152,12 @@ export async function submitTicketEmail(accessToken, email) {
     body: JSON.stringify({ customer_email: email }),
   });
 }
+export async function skipTicketEmail(accessToken) {
+  return apiFetch(`/api/widget/tickets/${accessToken}/`, {
+    method: "PATCH",
+    body: JSON.stringify({ needs_email: false }),
+  });
+}
 
 // ─── Ai Usage ─────────────────
 
