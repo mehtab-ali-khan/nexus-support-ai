@@ -45,7 +45,7 @@ export function WidgetSetupPage() {
                     Widget Setup
                 </h1>
                 <p className="text-sm text-[var(--g-600)]">
-                    Follow the steps below to add the chat widget to your website. Once installed, your customers will be able to ask questions and get answers from your support articles.
+                    Follow the steps below to add the chat widget to your website. Once installed, your customers will be able to ask questions and get answers from your knowledge base.
                 </p>
             </div>
 
@@ -119,14 +119,14 @@ export function WidgetSetupPage() {
                         Next, give the AI something to answer from
                     </p>
                     <p className="text-xs text-[var(--g-600)] mt-0.5">
-                        Add support articles so your widget can answer real customer questions.
+                        Add documents so your widget can answer real customer questions.
                     </p>
                 </div>
                 <button
                     onClick={() => navigate("/knowledge-base")}
                     className="flex items-center gap-1.5 px-4 py-2.5 rounded-[var(--radius-md)] bg-[var(--p)] text-white text-sm font-semibold hover:bg-[var(--p-strong)] transition flex-shrink-0"
                 >
-                    Add Support Articles
+                    Add Documents
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <line x1="5" y1="12" x2="19" y2="12" />
                         <polyline points="12 5 19 12 12 19" />

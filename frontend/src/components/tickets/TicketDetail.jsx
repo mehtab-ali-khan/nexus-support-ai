@@ -33,9 +33,9 @@ function MessageBubble({ msg }) {
     const hasCost = msg.cost != null;
 
     const label = isAgent
-        ? "You (agent)"
+        ? "You"
         : isAi
-            ? (isInternalDraft ? "AI draft — internal only" : "AI Assistant")
+            ? (isInternalDraft ? "AI draft" : "AI Assistant")
             : "Customer";
 
     // Internal AI draft — dashed yellow border, agent eyes only
