@@ -157,13 +157,13 @@ function HeaderBtn({ onClick, label, children, showTooltip = false }) {
           top: "calc(100% + 6px)",
           left: "50%",
           transform: "translateX(-50%)",
-          background: "var(--nw-s-soft)",       // dark slate, matches header text color
-          color: "var(--nw-s)",        // near-white, matches your gray scale instead of hardcoded "white"
+          background: "var(--nw-s-soft)",
+          color: "var(--nw-s)",
           fontSize: "11px",
           padding: "4px 8px",
           borderRadius: "6px",
           whiteSpace: "nowrap",
-          boxShadow: "var(--nw-shadow-md)", // reuses your existing shadow scale instead of a one-off
+          boxShadow: "var(--nw-shadow-md)",
           pointerEvents: "none",
           transition: "opacity 0.1s ease",
           zIndex: 10,
