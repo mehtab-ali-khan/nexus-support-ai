@@ -7,14 +7,11 @@ import { EmptyState, formatDateTime } from "../components/shared/ui.jsx";
 const TEST_WEBSITE_URL = import.meta.env.VITE_TEST_WEBSITE_URL;
 
 function IndexStatusBadge({ status }) {
-    const isReady = status === "ready";
+    if (status === "ready") return null;
+
     return (
-        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${isReady
-            ? "bg-[var(--p-soft)] text-[var(--p)]"
-            : "bg-[var(--danger-soft)] text-[var(--danger)]"
-            }`}>
-            <span className={`w-1.5 h-1.5 rounded-full ${isReady ? "bg-[var(--p)]" : "bg-[var(--danger)]"}`} />
-            {isReady ? "Success" : "Failed"}
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-[var(--danger-soft)] text-[var(--danger)]">
+            Failed
         </span>
     );
 }
