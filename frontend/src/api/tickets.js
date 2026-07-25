@@ -61,7 +61,7 @@ export async function apiFetch(path, options = {}, withAuth = false) {
   }
   if (response.status === 429) {
     const data = await response.json().catch(() => ({}));
-    throw new Error("Too many requests in a short period. Please try again after a few moments.");
+    throw new Error("Request limit exceeded. Please try again later.");
   }
 
 
