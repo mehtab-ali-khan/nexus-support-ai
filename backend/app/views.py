@@ -59,10 +59,6 @@ class TicketPagination(PageNumberPagination):
     max_page_size = 100
 
 
-class TicketListThrottle(UserRateThrottle):
-    scope = "ticket_list"
-
-
 class TicketCreateThrottle(AnonRateThrottle):
     scope = "ticket_create"
 
@@ -151,7 +147,6 @@ class TicketListCreateView(ListCreateAPIView):
     def get_throttles(self):
         if self.request.method == "POST":
             return [TicketCreateThrottle()]
-        return [TicketListThrottle()]
 
     def get_permissions(self):
         return [AllowAny()] if self.request.method == "POST" else [IsAuthenticated()]

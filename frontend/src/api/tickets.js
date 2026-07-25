@@ -59,6 +59,11 @@ export async function apiFetch(path, options = {}, withAuth = false) {
     window.location.href = "/login";
     throw new Error("Session expired. Please log in again.");
   }
+  if (response.status === 429) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error("Too many requests in a short period. Please try again after a few moments.");
+  }
+
 
   return await parseResponse(response);
 }

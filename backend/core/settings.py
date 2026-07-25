@@ -117,7 +117,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_THROTTLE_RATES": {
-        "ticket_create": "5/hour",
+        "ticket_create": "2/hour",
         "customer_message": "20/hour",
         "ticket_list": "120/minute",
     },
@@ -150,7 +150,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # =================================
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOG_LEVEL = "DEBUG" if DEBUG else "INFO"
+LOG_LEVEL = "INFO"
 
 LOGGING = {
     "version": 1,

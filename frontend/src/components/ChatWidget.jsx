@@ -386,8 +386,8 @@ export function ChatWidget({ apiKey }) {
       setNeedsEmail(Boolean(ticket.needs_email));
       setFirstMessage("");
       if (firstMessageRef.current) firstMessageRef.current.style.height = "auto";
-    } catch {
-      setError("Something went wrong. Please try again.");
+    } catch (err) {
+      setError(err.message || "Could not create a ticket. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -426,11 +426,11 @@ export function ChatWidget({ apiKey }) {
     setIsSubmitting(true);
     try {
       await createCustomerMessage(accessToken, { message: trimmed });
-    } catch {
+    } catch (err) {
       setMessages(prev => prev.filter(m => m.id !== optimisticMessage.id));
       clearAiWaitTimeout();
       setIsWaitingForAI(false);
-      setError("Could not send your message. Please try again.");
+      setError(err.message || "Could not send your message. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
