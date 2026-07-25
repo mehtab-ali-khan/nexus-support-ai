@@ -161,8 +161,6 @@ function HeaderBtn({ onClick, label, children, showTooltip = false }) {
           padding: "4px 8px",
           borderRadius: "6px",
           whiteSpace: "nowrap",
-          opacity: 0,
-          pointerEvents: "none",
           transition: "opacity 0.1s ease",
           zIndex: 10,
         }}>
