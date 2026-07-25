@@ -209,6 +209,7 @@ class CustomerTicketDetailSerializer(serializers.ModelSerializer):
             "priority",
             "category",
             "is_new",
+            "customer_email",
             "created_at",
             "messages",
         ]
@@ -216,6 +217,25 @@ class CustomerTicketDetailSerializer(serializers.ModelSerializer):
     def get_messages(self, ticket):
         visible_messages = [m for m in ticket.messages.all() if not m.is_internal]
         return CustomerMessageSerializer(visible_messages, many=True).data
+
+
+class CustomerEmailUpdateSerializer(serializers.ModelSerializer):
+    """
+    Used only for the customer submitting their email after an escalation.
+    Rejects the update if this ticket already has an email on file, so the
+    same endpoint can't be replayed to silently overwrite it later.
+    """
+
+    class Meta:
+        model = Ticket
+        fields = ["customer_email"]
+
+    def validate_customer_email(self, value):
+        if self.instance and self.instance.customer_email:
+            raise serializers.ValidationError(
+                "An email has already been provided for this ticket."
+            )
+        return value
 
 
 class TicketMessageSerializer(serializers.Serializer):

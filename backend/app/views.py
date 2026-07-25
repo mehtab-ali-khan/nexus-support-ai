@@ -25,6 +25,7 @@ from django.db.models import Prefetch
 
 from .models import Ticket, Message, KnowledgeBaseArticle, AIUsageLog
 from .serializers import (
+    CustomerEmailUpdateSerializer,
     CustomerMessageSerializer,
     CustomerTicketDetailSerializer,
     KnowledgeBaseArticleSerializer,
@@ -354,13 +355,19 @@ class KnowledgeBaseArticleDetailView(RetrieveUpdateDestroyAPIView):
 # ─── Customer / widget views (no auth, scoped by access_token) ───────────────
 
 
-class CustomerTicketDetailView(generics.RetrieveAPIView):
+class CustomerTicketDetailView(generics.RetrieveUpdateAPIView):
     permission_classes = [AllowAny]
-    serializer_class = CustomerTicketDetailSerializer
     lookup_field = "access_token"
 
     def get_queryset(self):
         return Ticket.objects.prefetch_related("messages")
+
+    def get_serializer_class(self):
+        return (
+            CustomerEmailUpdateSerializer
+            if self.request.method in ["PUT", "PATCH"]
+            else CustomerTicketDetailSerializer
+        )
 
 
 class CustomerMessageCreateView(CreateAPIView):

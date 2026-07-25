@@ -135,6 +135,12 @@ def _attempt_ai_reply(*, ticket, customer_message):
             is_internal=False,
             ai_confidence=None,
         )
+
+        if not ticket.customer_email:
+            _push_to_widget(
+                ticket.id,
+                {"type": "request_email"},
+            )
     else:
         customer_message_row = Message.objects.create(
             ticket=ticket,
