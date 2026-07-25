@@ -96,6 +96,9 @@ const styles = `
   .nw-scroll::-webkit-scrollbar { width: 4px; }
   .nw-scroll::-webkit-scrollbar-track { background: transparent; }
   .nw-scroll::-webkit-scrollbar-thumb { background: var(--nw-g-300); border-radius: 4px; }
+  .nw-header-btn-tooltip {
+    opacity: 0;
+  }
   .nw-header-btn-wrap:hover .nw-header-btn-tooltip {
     opacity: 1;
   }
@@ -154,13 +157,14 @@ function HeaderBtn({ onClick, label, children, showTooltip = false }) {
           top: "calc(100% + 6px)",
           left: "50%",
           transform: "translateX(-50%)",
-          background: "var(--nw-s)",
-          color: "white",
+          background: "var(--nw-s-soft)",       // dark slate, matches header text color
+          color: "var(--nw-s)",        // near-white, matches your gray scale instead of hardcoded "white"
           fontSize: "11px",
-          fontWeight: "600",
           padding: "4px 8px",
           borderRadius: "6px",
           whiteSpace: "nowrap",
+          boxShadow: "var(--nw-shadow-md)", // reuses your existing shadow scale instead of a one-off
+          pointerEvents: "none",
           transition: "opacity 0.1s ease",
           zIndex: 10,
         }}>
