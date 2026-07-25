@@ -15,7 +15,9 @@ TOP_K = 5
 SIMILARITY_THRESHOLD = 0.5
 CONFIDENCE_THRESHOLD = 70
 
-CONNECTING_MESSAGE = "Our support team has been notified and will follow up shortly."
+CONNECTING_MESSAGE = (
+    "I've passed this to our support team, they'll get back to you shortly."
+)
 
 
 @dataclass
