@@ -1,7 +1,7 @@
 // frontend/src/components/ChatWidget.jsx
 
 import { useEffect, useRef, useState } from "react";
-import { createCustomerMessage, createTicket, getTicketByToken } from "../api/tickets.js";
+import { createCustomerMessage, createTicket, getTicketByToken, submitTicketEmail } from "../api/tickets.js";
 import { useWebSocket } from "../hooks/useWebSocket.js";
 
 const STORAGE_KEY = "resolvio_ticket_token";
@@ -249,6 +249,15 @@ export function ChatWidget({ apiKey }) {
   const [newMessage, setNewMessage] = useState("");
   const [error, setError] = useState("");
   const [unread, setUnread] = useState(0);
+
+  // Email capture — set once the backend asks for it via websocket, and
+  // once a ticket already has an email on file we never ask again.
+  const [needsEmail, setNeedsEmail] = useState(false);
+  const [hasEmail, setHasEmail] = useState(false);
+  const [emailInput, setEmailInput] = useState("");
+  const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
+  const [emailError, setEmailError] = useState("");
+
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const firstMessageRef = useRef(null);
@@ -272,12 +281,14 @@ export function ChatWidget({ apiKey }) {
         if (chatState === "closed") setUnread(u => u + 1);
         return [...prev, data.message];
       });
-      // Any incoming message (AI or agent) means we're no longer waiting
       clearAiWaitTimeout();
       setIsWaitingForAI(false);
     }
     if (data.type === "ticket_update" && data.status) {
       setTicketStatus(data.status);
+    }
+    if (data.type === "request_email") {
+      setNeedsEmail(true);
     }
   });
 
@@ -296,7 +307,7 @@ export function ChatWidget({ apiKey }) {
     if (chatState !== "closed") {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages, isWaitingForAI, chatState]);
+  }, [messages, isWaitingForAI, needsEmail, chatState]);
 
   useEffect(() => {
     if (chatState !== "closed") setUnread(0);
@@ -324,6 +335,7 @@ export function ChatWidget({ apiKey }) {
       setAccessToken(token);
       setMessages(ticket.messages);
       setTicketStatus(ticket.status);
+      setHasEmail(Boolean(ticket.customer_email));
     } catch {
       localStorage.removeItem(STORAGE_KEY);
     } finally {
@@ -344,6 +356,7 @@ export function ChatWidget({ apiKey }) {
       const ticket = await getTicketByToken(token);
       setMessages(ticket.messages);
       setTicketStatus(ticket.status);
+      setHasEmail(Boolean(ticket.customer_email));
       setFirstMessage("");
       if (firstMessageRef.current) firstMessageRef.current.style.height = "auto";
     } catch {
@@ -363,7 +376,7 @@ export function ChatWidget({ apiKey }) {
   async function submitMessage(e) {
     e.preventDefault();
     const trimmed = newMessage.trim();
-    if (isSubmitting || isWaitingForAI || !trimmed) return;
+    if (isSubmitting || isWaitingForAI || needsEmail || !trimmed) return;
 
     setError("");
 
@@ -403,6 +416,25 @@ export function ChatWidget({ apiKey }) {
     }
   }
 
+  async function submitEmail(e) {
+    e.preventDefault();
+    const trimmed = emailInput.trim();
+    if (isSubmittingEmail || !trimmed) return;
+
+    setEmailError("");
+    setIsSubmittingEmail(true);
+    try {
+      await submitTicketEmail(accessToken, trimmed);
+      setHasEmail(true);
+      setNeedsEmail(false);
+      setEmailInput("");
+    } catch (err) {
+      setEmailError(err.message || "Could not save your email. Please try again.");
+    } finally {
+      setIsSubmittingEmail(false);
+    }
+  }
+
   function startNewConversation() {
     if (!window.confirm("Start a new conversation? You won't be able to return to this conversation.")) {
       return;
@@ -416,9 +448,13 @@ export function ChatWidget({ apiKey }) {
     setError("");
     setUnread(0);
     setIsWaitingForAI(false);
+    setNeedsEmail(false);
+    setHasEmail(false);
+    setEmailInput("");
+    setEmailError("");
   }
 
-  const isReplyBoxDisabled = isSubmitting || isWaitingForAI;
+  const isReplyBoxDisabled = isSubmitting || isWaitingForAI || needsEmail;
 
   // ─── State 1: Closed — just the bubble ───────────────────────────────────
 
@@ -628,85 +664,147 @@ export function ChatWidget({ apiKey }) {
             <div ref={messagesEndRef} />
           </div>
 
-          <div style={{
-            padding: "10px 12px",
-            background: "#ffffff",
-            borderTop: "1px solid var(--nw-g-200)",
-            flexShrink: 0,
-          }}>
-            {error && (
-              <p style={{ fontSize: "12px", color: "var(--danger, #dc2626)", marginBottom: "8px" }}>{error}</p>
-            )}
-
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "8px 12px",
-              borderRadius: "12px",
-              border: "1px solid var(--nw-g-300)",
-              background: isReplyBoxDisabled ? "var(--nw-g-200)" : "var(--nw-g-100)",
-              transition: "border-color 0.15s, background 0.15s",
-            }}
-              onFocus={() => { }}
+          {/* Mandatory email capture — replaces the normal reply box while active */}
+          {needsEmail ? (
+            <form
+              onSubmit={submitEmail}
+              style={{
+                padding: "14px 12px",
+                background: "var(--nw-p-soft)",
+                borderTop: "1px solid var(--nw-g-200)",
+                flexShrink: 0,
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+              }}
             >
-              <textarea
-                ref={textareaRef}
-                className="nw-msg-input"
-                value={newMessage}
-                required
-                rows={1}
-                placeholder={isWaitingForAI ? "Waiting for a reply…" : "Write a message…"}
-                disabled={isReplyBoxDisabled}
-                onChange={handleTextareaInput}
-                onKeyDown={handleKeyDown}
-                style={{
-                  resize: "none",
-                  border: "none",
-                  background: "transparent",
-                  fontSize: "14px",
-                  lineHeight: "1.5",
-                  paddingTop: "6px",
-                  paddingBottom: "6px",
-                  color: "var(--nw-s)",
-                  flex: 1,
-                  maxHeight: "120px",
-                  overflowY: "auto",
-                  fontFamily: "inherit",
-                  outline: "none",
-                  cursor: isReplyBoxDisabled ? "not-allowed" : "text",
-                }}
-              />
+              <p style={{ fontSize: "12px", color: "var(--nw-p-strong)", fontWeight: "600", lineHeight: 1.5 }}>
+                Please leave your email so our team can follow up with you.
+              </p>
+              <div style={{ display: "flex", gap: "8px" }}>
+                <input
+                  type="email"
+                  required
+                  value={emailInput}
+                  onChange={e => setEmailInput(e.target.value)}
+                  placeholder="you@example.com"
+                  autoFocus
+                  style={{
+                    flex: 1,
+                    padding: "9px 12px",
+                    borderRadius: "8px",
+                    border: "1px solid var(--nw-g-300)",
+                    fontSize: "14px",
+                    color: "var(--nw-s)",
+                    background: "#ffffff",
+                    outline: "none",
+                    fontFamily: "inherit",
+                  }}
+                />
+                <button
+                  type="submit"
+                  disabled={isSubmittingEmail || !emailInput.trim()}
+                  style={{
+                    padding: "9px 16px",
+                    borderRadius: "8px",
+                    background: "var(--nw-p)",
+                    color: "white",
+                    fontSize: "13px",
+                    fontWeight: "600",
+                    border: "none",
+                    cursor: isSubmittingEmail ? "wait" : "pointer",
+                    opacity: isSubmittingEmail || !emailInput.trim() ? 0.6 : 1,
+                    flexShrink: 0,
+                  }}
+                >
+                  {isSubmittingEmail ? "Saving…" : "Submit"}
+                </button>
+              </div>
+              {emailError && (
+                <p style={{ fontSize: "12px", color: "var(--danger, #dc2626)" }}>{emailError}</p>
+              )}
+            </form>
+          ) : (
+            <div style={{
+              padding: "10px 12px",
+              background: "#ffffff",
+              borderTop: "1px solid var(--nw-g-200)",
+              flexShrink: 0,
+            }}>
+              {error && (
+                <p style={{ fontSize: "12px", color: "var(--danger, #dc2626)", marginBottom: "8px" }}>{error}</p>
+              )}
 
-              <button
-                type="button"
-                onClick={submitMessage}
-                disabled={isReplyBoxDisabled || !newMessage.trim()}
-                aria-label="Send message"
-                aria-busy={isSubmitting}
-                style={{
-                  width: "32px", height: "32px",
-                  borderRadius: "8px",
-                  background: newMessage.trim() && !isReplyBoxDisabled ? "var(--nw-gradient)" : "var(--nw-g-300)",
-                  border: "none",
-                  cursor: isReplyBoxDisabled || !newMessage.trim() ? "not-allowed" : "pointer",
-                  opacity: isReplyBoxDisabled ? 0.6 : 1,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  flexShrink: 0,
-                  transition: "background 0.15s, opacity 0.15s",
-                }}
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "8px 12px",
+                borderRadius: "12px",
+                border: "1px solid var(--nw-g-300)",
+                background: isReplyBoxDisabled ? "var(--nw-g-200)" : "var(--nw-g-100)",
+                transition: "border-color 0.15s, background 0.15s",
+              }}
+                onFocus={() => { }}
               >
-                {isSubmitting ? (
-                  <span style={{ width: "12px", height: "12px", borderRadius: "50%", border: "2px solid rgba(255,255,255,0.45)", borderTopColor: "white", animation: "nw-dot 0.8s linear infinite" }} />
-                ) : (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-                    <line x1="22" y1="2" x2="11" y2="13" />
-                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                  </svg>
-                )}
-              </button>
+                <textarea
+                  ref={textareaRef}
+                  className="nw-msg-input"
+                  value={newMessage}
+                  required
+                  rows={1}
+                  placeholder={isWaitingForAI ? "Waiting for a reply…" : "Write a message…"}
+                  disabled={isReplyBoxDisabled}
+                  onChange={handleTextareaInput}
+                  onKeyDown={handleKeyDown}
+                  style={{
+                    resize: "none",
+                    border: "none",
+                    background: "transparent",
+                    fontSize: "14px",
+                    lineHeight: "1.5",
+                    paddingTop: "6px",
+                    paddingBottom: "6px",
+                    color: "var(--nw-s)",
+                    flex: 1,
+                    maxHeight: "120px",
+                    overflowY: "auto",
+                    fontFamily: "inherit",
+                    outline: "none",
+                    cursor: isReplyBoxDisabled ? "not-allowed" : "text",
+                  }}
+                />
+
+                <button
+                  type="button"
+                  onClick={submitMessage}
+                  disabled={isReplyBoxDisabled || !newMessage.trim()}
+                  aria-label="Send message"
+                  aria-busy={isSubmitting}
+                  style={{
+                    width: "32px", height: "32px",
+                    borderRadius: "8px",
+                    background: newMessage.trim() && !isReplyBoxDisabled ? "var(--nw-gradient)" : "var(--nw-g-300)",
+                    border: "none",
+                    cursor: isReplyBoxDisabled || !newMessage.trim() ? "not-allowed" : "pointer",
+                    opacity: isReplyBoxDisabled ? 0.6 : 1,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    flexShrink: 0,
+                    transition: "background 0.15s, opacity 0.15s",
+                  }}
+                >
+                  {isSubmitting ? (
+                    <span style={{ width: "12px", height: "12px", borderRadius: "50%", border: "2px solid rgba(255,255,255,0.45)", borderTopColor: "white", animation: "nw-dot 0.8s linear infinite" }} />
+                  ) : (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+                      <line x1="22" y1="2" x2="11" y2="13" />
+                      <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </>
       )}
     </div>

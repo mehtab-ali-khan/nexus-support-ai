@@ -141,6 +141,12 @@ export async function createCustomerMessage(accessToken, payload) {
     body: JSON.stringify(payload),
   });
 }
+export async function submitTicketEmail(accessToken, email) {
+  return apiFetch(`/api/widget/tickets/${accessToken}/`, {
+    method: "PATCH",
+    body: JSON.stringify({ customer_email: email }),
+  });
+}
 
 // ─── Ai Usage ─────────────────
 
