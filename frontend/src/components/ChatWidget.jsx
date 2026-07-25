@@ -505,6 +505,7 @@ export function ChatWidget({ apiKey }) {
   }
 
   const isReplyBoxDisabled = isSubmitting || isWaitingForAI || needsEmail;
+  const isTicketResolved = ticketStatus === "resolved";
 
   // ─── State 1: Closed — just the bubble ───────────────────────────────────
 
@@ -818,8 +819,41 @@ export function ChatWidget({ apiKey }) {
                 </>
               )}
             </form>
+          ) : isTicketResolved ? (
+            // ── Resolved state — no reply box, just a closed message + new conversation button ──
+            <div style={{
+              padding: "16px 14px",
+              background: "var(--nw-g-100)",
+              borderTop: "1px solid var(--nw-g-200)",
+              flexShrink: 0,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "10px",
+              textAlign: "center",
+            }}>
+              <p style={{ fontSize: "13px", color: "var(--nw-g-600)", lineHeight: 1.5 }}>
+                This conversation has been marked as resolved. If you need more help, start a new conversation.
+              </p>
+              <button
+                type="button"
+                onClick={startNewConversation}
+                style={{
+                  padding: "9px 18px",
+                  borderRadius: "8px",
+                  background: "var(--nw-gradient)",
+                  color: "white",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Start new conversation
+              </button>
+            </div>
           ) : (
-            // ...your existing reply box stays exactly the same here
+            // ── Normal reply box (unchanged) ──
             <div style={{
               padding: "10px 12px",
               background: "#ffffff",
@@ -839,9 +873,7 @@ export function ChatWidget({ apiKey }) {
                 border: "1px solid var(--nw-g-300)",
                 background: isReplyBoxDisabled ? "var(--nw-g-200)" : "var(--nw-g-100)",
                 transition: "border-color 0.15s, background 0.15s",
-              }}
-                onFocus={() => { }}
-              >
+              }}>
                 <textarea
                   ref={textareaRef}
                   className="nw-msg-input"
