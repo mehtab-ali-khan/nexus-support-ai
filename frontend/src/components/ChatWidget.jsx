@@ -216,7 +216,6 @@ function MessageBubble({ msg }) {
         borderRadius: fromTeam ? "4px 18px 18px 18px" : "18px 4px 18px 18px",
         background: fromTeam ? "#ffffff" : "var(--nw-s-soft)",
         color: "var(--nw-s)",
-        border: fromTeam ? "1px solid var(--nw-g-300)" : "none",
         boxShadow: fromTeam ? "var(--nw-shadow-sm)" : "none",
       }}>
         <div style={{
@@ -249,13 +248,17 @@ function TypingIndicator() {
         background: "#ffffff",
         border: "1px solid var(--nw-g-300)",
         boxShadow: "var(--nw-shadow-sm)",
-        display: "flex", alignItems: "center", gap: "3px",
+        display: "flex", alignItems: "center", gap: "6px",
       }}>
-        <span className="nw-dot" />
-        <span className="nw-dot" />
-        <span className="nw-dot" />
+        <span style={{ fontSize: "13px", color: "var(--nw-g-600)" }}>
+          Thinking
+        </span>
+        <span style={{ display: "flex", alignItems: "center", gap: "3px" }}>
+          <span className="nw-dot" />
+          <span className="nw-dot" />
+          <span className="nw-dot" />
+        </span>
       </div>
-
     </div>
   );
 }

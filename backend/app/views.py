@@ -145,8 +145,7 @@ class TicketListCreateView(ListCreateAPIView):
     pagination_class = TicketPagination
 
     def get_throttles(self):
-        if self.request.method == "POST":
-            return [TicketCreateThrottle()]
+        return [TicketCreateThrottle()] if self.request.method == "POST" else []
 
     def get_permissions(self):
         return [AllowAny()] if self.request.method == "POST" else [IsAuthenticated()]
