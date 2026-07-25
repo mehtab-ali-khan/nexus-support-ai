@@ -154,8 +154,13 @@ class TicketListCreateView(ListCreateAPIView):
         queryset = Ticket.objects.filter(company=self.request.user.company)
 
         status_filter = self.request.query_params.get("status")
+
         if status_filter in (Ticket.Status.OPEN, Ticket.Status.RESOLVED):
             queryset = queryset.filter(status=status_filter)
+        elif status_filter == "unseen":
+            queryset = queryset.filter(is_new=True)
+        elif status_filter == "starred":
+            queryset = queryset.filter(is_starred=True)
 
         search_term = self.request.query_params.get("search", "").strip()
         if search_term:

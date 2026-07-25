@@ -13,6 +13,8 @@ const STATUS_FILTERS = [
     { value: "all", label: "All" },
     { value: "open", label: "Open" },
     { value: "resolved", label: "Resolved" },
+    { value: "unseen", label: "Unseen" },
+    { value: "starred", label: "Starred" },
 ];
 
 const SEARCH_DEBOUNCE_MS = 400;
