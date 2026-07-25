@@ -103,6 +103,7 @@ class Ticket(models.Model):
         default=Category.GENERAL,
     )
     is_new = models.BooleanField(default=True)
+    is_starred = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     search_vector = SearchVectorField(null=True, editable=False)

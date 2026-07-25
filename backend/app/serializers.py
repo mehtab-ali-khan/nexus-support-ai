@@ -108,6 +108,7 @@ class TicketListSerializer(serializers.ModelSerializer):
             "priority",
             "category",
             "is_new",
+            "is_starred",
             "created_at",
             "updated_at",
         ]
@@ -119,7 +120,7 @@ class TicketListSerializer(serializers.ModelSerializer):
 class TicketUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
-        fields = ["status", "priority", "category"]
+        fields = ["status", "priority", "category", "is_starred"]
 
 
 # ─── Messages ────────────────────────────────────────────────────────────────
@@ -170,8 +171,6 @@ class CustomerMessageSerializer(serializers.ModelSerializer):
 
 
 class AgentTicketDetailSerializer(serializers.ModelSerializer):
-    """Agent-facing ticket detail. Shows every message, including internal AI drafts."""
-
     messages = AgentMessageSerializer(many=True, read_only=True)
     message_preview = serializers.SerializerMethodField()
 
@@ -184,6 +183,7 @@ class AgentTicketDetailSerializer(serializers.ModelSerializer):
             "priority",
             "category",
             "is_new",
+            "is_starred",
             "created_at",
             "messages",
         ]
