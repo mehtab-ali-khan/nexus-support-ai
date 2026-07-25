@@ -1,9 +1,9 @@
 // frontend/src/components/tickets/TicketDetail.jsx
 
 import { useEffect, useRef, useState } from "react";
-import { createAgentReply, updateTicketStatus } from "../../api/tickets.js";
+import { updateTicketStarred, createAgentReply, updateTicketStatus } from "../../api/tickets.js";
 import { Avatar, EmptyState, formatDate } from "../shared/ui.jsx";
-import { StatusBadge, TICKET_STATUSES, statusLabels } from "./StatusBadge.jsx";
+import { StarButton, StatusBadge, TICKET_STATUSES, statusLabels } from "./StatusBadge.jsx";
 
 function formatCost(cost) {
     const n = Number(cost);
@@ -71,7 +71,7 @@ function MessageBubble({ msg }) {
     );
 }
 
-export function TicketDetail({ ticket, isLoading, onStatusUpdated, onClose }) {
+export function TicketDetail({ ticket, isLoading, onStatusUpdated, onStarUpdated, onClose }) {
     const [reply, setReply] = useState("");
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -79,6 +79,19 @@ export function TicketDetail({ ticket, isLoading, onStatusUpdated, onClose }) {
     const [isStatusMenuOpen, setIsStatusMenuOpen] = useState(false);
     const messagesContainerRef = useRef(null);
     const textareaRef = useRef(null);
+    const [isStarSubmitting, setIsStarSubmitting] = useState(false);
+
+    async function toggleStar() {
+        setIsStarSubmitting(true);
+        try {
+            const updated = await updateTicketStarred(ticket.id, !ticket.is_starred);
+            onStarUpdated(ticket.id, updated.is_starred);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsStarSubmitting(false);
+        }
+    }
 
     useEffect(() => {
         const container = messagesContainerRef.current;
@@ -161,6 +174,11 @@ export function TicketDetail({ ticket, isLoading, onStatusUpdated, onClose }) {
                         {messageCount} {messageCount === 1 ? "message" : "messages"} · Started {formatDate(ticket.created_at)}
                     </p>
                 </div>
+                <StarButton
+                    isStarred={ticket.is_starred}
+                    onClick={toggleStar}
+                    isLoading={isStarSubmitting}
+                />
 
                 {/* Status dropdown — shows current status as the button label */}
                 <div

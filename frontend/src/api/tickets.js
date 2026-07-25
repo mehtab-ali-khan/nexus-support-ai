@@ -120,6 +120,13 @@ export async function updateTicketStatus(ticketId, status) {
   }, true);
 }
 
+export async function updateTicketStarred(ticketId, isStarred) {
+  return apiFetch(`/api/tickets/${ticketId}/`, {
+    method: "PATCH",
+    body: JSON.stringify({ is_starred: isStarred }),
+  }, true);
+}
+
 export async function createAgentReply(ticketId, payload) {
   return apiFetch(`/api/tickets/${ticketId}/agent-messages/`, {
     method: "POST",

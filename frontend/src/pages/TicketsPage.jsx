@@ -145,6 +145,14 @@ export function TicketsPage() {
             current?.id === ticketId ? { ...current, status } : current
         );
     }
+    function handleTicketStarUpdated(ticketId, isStarred) {
+        setTickets(currentTickets =>
+            currentTickets.map(t => (t.id === ticketId ? { ...t, is_starred: isStarred } : t))
+        );
+        setSelectedTicket(current =>
+            current?.id === ticketId ? { ...current, is_starred: isStarred } : current
+        );
+    }
 
     function handleFilterChange(nextFilter) {
         setStatusFilter(nextFilter);
@@ -293,6 +301,7 @@ export function TicketsPage() {
                         ticket={selectedTicket}
                         isLoading={isDetailLoading}
                         onStatusUpdated={handleTicketStatusUpdated}
+                        onStarUpdated={handleTicketStarUpdated}
                         onClose={() => setSelectedTicket(null)}
                     />
                 )}
