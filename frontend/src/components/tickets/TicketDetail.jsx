@@ -12,19 +12,6 @@ function formatCost(cost) {
     return `$${n.toFixed(4)}`;
 }
 
-function SwapLabel({ label, cost, colorClass }) {
-    return (
-        <span className={`group/label relative inline-grid text-[10px] font-bold uppercase tracking-wider ${colorClass} overflow-hidden align-top`}>
-            <span className="col-start-1 row-start-1 whitespace-nowrap transition-all duration-300 ease-out group-hover/label:-translate-x-full group-hover/label:opacity-0">
-                {label}
-            </span>
-            <span className="col-start-1 row-start-1 whitespace-nowrap normal-case font-mono translate-x-full opacity-0 transition-all duration-300 ease-out group-hover/label:translate-x-0 group-hover/label:opacity-100">
-                {formatCost(cost)}
-            </span>
-        </span>
-    );
-}
-
 function MessageBubble({ msg }) {
     const isAgent = msg.sender_type === "agent";
     const isAi = msg.sender_type === "ai";
@@ -42,19 +29,15 @@ function MessageBubble({ msg }) {
     if (isInternalDraft) {
         return (
             <div className="flex flex-col items-end gap-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--warning)] px-1 flex items-center gap-1.5">
-                    {hasCost ? (
-                        <SwapLabel label={label} cost={msg.cost} colorClass="text-[var(--warning)]" />
-                    ) : (
-                        label
-                    )}
-                    {msg.ai_confidence != null && (
-                        <span className="normal-case font-semibold opacity-80">
-                            · {Math.round(msg.ai_confidence)}% confident
-                        </span>
-                    )}
-                </span>
                 <div className="max-w-[82%] px-4 py-3 text-sm leading-relaxed rounded-lg rounded-tr-sm border border-dashed border-[var(--warning)] bg-[var(--warning-soft)] text-[var(--s-mid)]">
+                    <div className="mb-1 text-[11px] font-bold uppercase tracking-wider text-[var(--warning)] flex items-center gap-1.5">
+                        <span>
+                            {label}
+                            {hasCost && (
+                                <span className="normal-case font-mono opacity-80"> ({formatCost(msg.cost)})</span>
+                            )}
+                        </span>
+                    </div>
                     {msg.body}
                 </div>
                 <span className="text-[10px] text-[var(--g-500)] px-1">
@@ -66,19 +49,19 @@ function MessageBubble({ msg }) {
 
     return (
         <div className={`flex flex-col gap-1 ${fromTeam ? "items-end" : "items-start"}`}>
-            <span className={`px-1 ${fromTeam ? "text-[var(--p)]" : "text-[var(--g-600)]"}`}>
-                {hasCost ? (
-                    <SwapLabel label={label} cost={msg.cost} colorClass={fromTeam ? "text-[var(--p)]" : "text-[var(--g-600)]"} />
-                ) : (
-                    <span className="text-[10px] font-bold uppercase tracking-wider">{label}</span>
-                )}
-            </span>
-            <div className={`max-w-[82%] px-4 py-3 text-sm leading-relaxed
+            <div
+                className={`max-w-[82%] px-4 py-3 text-sm leading-relaxed
                 ${fromTeam
-                    ? "bg-white border border-[var(--g-300)] rounded-lg rounded-tr-sm shadow-[var(--shadow-sm)]"
-                    : "bg-[var(--g-200)] rounded-lg rounded-tl-sm text-[var(--s)]"
-                }`}
+                        ? "bg-white border border-[var(--g-300)] rounded-lg rounded-tr-sm shadow-[var(--shadow-sm)]"
+                        : "bg-[var(--g-200)] rounded-lg rounded-tl-sm text-[var(--s)]"
+                    }`}
             >
+                <div className={`mb-1 text-[11px] font-bold uppercase tracking-wider ${fromTeam ? "text-[var(--g-600)]" : "text-[var(--s-mid)]"}`}>
+                    {label}
+                    {hasCost && (
+                        <span className="normal-case font-mono opacity-80"> ({formatCost(msg.cost)})</span>
+                    )}
+                </div>
                 {msg.body}
             </div>
             <span className="text-[10px] text-[var(--g-500)] px-1">
