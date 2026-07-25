@@ -65,7 +65,7 @@ export function BrandLogo({ to = "/", showText = true, compact = false, classNam
     );
 }
 
-export function EmptyState({ title, body }) {
+export function EmptyState({ title }) {
     return (
         <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
             <p className="font-semibold text-[var(--s-mid)] text-sm mb-1">{title}</p>

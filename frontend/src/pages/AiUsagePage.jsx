@@ -90,7 +90,6 @@ export function AiUsagePage() {
                 {isForbidden && (
                     <EmptyState
                         title="Owners only"
-                        body="Only company owners can view AI usage and cost data."
                     />
                 )}
 
@@ -107,7 +106,6 @@ export function AiUsagePage() {
                 {isOwner && !isLoading && !error && summary && summary.by_model.length === 0 && (
                     <EmptyState
                         title="No AI usage yet"
-                        body="Once your AI providers start answering tickets, costs will show up here."
                     />
                 )}
 
@@ -143,7 +141,7 @@ export function AiUsagePage() {
 
             {/* ── Total cost summary — separate small card below, only once data is ready ── */}
             {isOwner && !isLoading && !error && summary && (
-                <div className="flex justify-end mt-2">
+                <div className="flex justify-end mt-2 mr-2">
                     <p className="mt-3 text-[var(--s)]">
                         Total = {formatCost(summary.overall_total_cost)}
                     </p>
