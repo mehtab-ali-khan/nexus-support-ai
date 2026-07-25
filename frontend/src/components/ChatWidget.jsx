@@ -96,6 +96,9 @@ const styles = `
   .nw-scroll::-webkit-scrollbar { width: 4px; }
   .nw-scroll::-webkit-scrollbar-track { background: transparent; }
   .nw-scroll::-webkit-scrollbar-thumb { background: var(--nw-g-300); border-radius: 4px; }
+  .nw-header-btn-wrap:hover .nw-header-btn-tooltip {
+    opacity: 1;
+  }
 
   @media (max-width: 600px) {
     .nw-maximized {
@@ -124,26 +127,49 @@ function getSenderLabel(senderType) {
 
 // ─── Small reusable pieces ────────────────────────────────────────────────────
 
-function HeaderBtn({ onClick, label, children }) {
+function HeaderBtn({ onClick, label, children, showTooltip = false }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={label}
-      style={{
-        width: "30px", height: "30px",
-        borderRadius: "8px", border: "none",
-        background: "transparent",
-        color: "var(--nw-g-600)",
-        cursor: "pointer",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        transition: "background 0.15s, color 0.15s",
-      }}
-      onMouseEnter={e => { e.currentTarget.style.background = "var(--nw-g-200)"; e.currentTarget.style.color = "var(--nw-s)"; }}
-      onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--nw-g-600)"; }}
-    >
-      {children}
-    </button>
+    <div style={{ position: "relative" }} className={showTooltip ? "nw-header-btn-wrap" : ""}>
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={label}
+        style={{
+          width: "30px", height: "30px",
+          borderRadius: "8px", border: "none",
+          background: "transparent",
+          color: "var(--nw-g-600)",
+          cursor: "pointer",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          transition: "background 0.15s, color 0.15s",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.background = "var(--nw-g-200)"; e.currentTarget.style.color = "var(--nw-s)"; }}
+        onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--nw-g-600)"; }}
+      >
+        {children}
+      </button>
+      {showTooltip && (
+        <span className="nw-header-btn-tooltip" style={{
+          position: "absolute",
+          top: "calc(100% + 6px)",
+          left: "50%",
+          transform: "translateX(-50%)",
+          background: "var(--nw-s)",
+          color: "white",
+          fontSize: "11px",
+          fontWeight: "600",
+          padding: "4px 8px",
+          borderRadius: "6px",
+          whiteSpace: "nowrap",
+          opacity: 0,
+          pointerEvents: "none",
+          transition: "opacity 0.1s ease",
+          zIndex: 10,
+        }}>
+          {label}
+        </span>
+      )}
+    </div>
   );
 }
 
@@ -534,14 +560,14 @@ export function ChatWidget({ apiKey }) {
       {/* Right side — action buttons */}
       <div style={{ display: "flex", gap: "2px" }}>
         {accessToken && (
-          <HeaderBtn onClick={startNewConversation} label="Start new conversation">
+          <HeaderBtn onClick={startNewConversation} label="Start new conversation" showTooltip>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M12 5v14M5 12h14" />
             </svg>
           </HeaderBtn>
         )}
         {chatState === "maximized" && (
-          <HeaderBtn onClick={() => setChatState("minimized")} label="Minimize">
+          <HeaderBtn onClick={() => setChatState("minimized")} label="Minimize" showTooltip>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <polyline points="4 14 10 14 10 20" />
               <polyline points="20 10 14 10 14 4" />
@@ -551,7 +577,7 @@ export function ChatWidget({ apiKey }) {
           </HeaderBtn>
         )}
         {chatState === "minimized" && (
-          <HeaderBtn onClick={() => setChatState("maximized")} label="Expand">
+          <HeaderBtn onClick={() => setChatState("maximized")} label="Expand" showTooltip>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <polyline points="15 3 21 3 21 9" />
               <polyline points="9 21 3 21 3 15" />
@@ -560,7 +586,7 @@ export function ChatWidget({ apiKey }) {
             </svg>
           </HeaderBtn>
         )}
-        <HeaderBtn onClick={() => setChatState("closed")} label="Close">
+        <HeaderBtn onClick={() => setChatState("closed")} label="Close" showTooltip>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
