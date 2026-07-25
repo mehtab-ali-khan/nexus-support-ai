@@ -133,7 +133,7 @@ export function AiUsagePage() {
                                     <td className="px-4 py-2.5 text-right text-[var(--g-600)]">{row.call_count}</td>
                                     <td className="px-4 py-2.5 text-right text-[var(--g-600)]">{row.total_input_tokens.toLocaleString()}</td>
                                     <td className="px-4 py-2.5 text-right text-[var(--g-600)]">{row.total_output_tokens.toLocaleString()}</td>
-                                    <td className="px-4 py-2.5 text-right font-semibold text-[var(--s)]">{formatCost(row.total_cost)}</td>
+                                    <td className="px-4 py-2.5 text-right text-[var(--s)]">{formatCost(row.total_cost)}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -143,12 +143,9 @@ export function AiUsagePage() {
 
             {/* ── Total cost summary — separate small card below, only once data is ready ── */}
             {isOwner && !isLoading && !error && summary && (
-                <div className="bg-white rounded-[var(--radius-xl)] border border-[var(--g-300)] shadow-[var(--shadow-sm)] p-5 mt-4">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-[var(--g-500)] mb-1">
-                        Total cost — {PERIODS.find(p => p.value === period)?.label.toLowerCase()}
-                    </p>
-                    <p className="text-2xl font-semibold text-[var(--s)]">
-                        {formatCost(summary.overall_total_cost)}
+                <div className="flex justify-end mt-2">
+                    <p className="mt-3 text-[var(--s)]">
+                        Total = {formatCost(summary.overall_total_cost)}
                     </p>
                 </div>
             )}
