@@ -100,15 +100,20 @@ export function TicketDetail({ ticket, isLoading, onStatusUpdated, onStarUpdated
 
     async function submitReply(e) {
         e.preventDefault();
-        if (!reply.trim()) return;
+        const trimmed = reply.trim();
+        if (!trimmed || isSubmitting) return;
+
         setError("");
         setIsSubmitting(true);
+
+        setReply("");
+        if (textareaRef.current) textareaRef.current.style.height = "auto";
+
         try {
-            await createAgentReply(ticket.id, { message: reply });
-            setReply("");
-            if (textareaRef.current) textareaRef.current.style.height = "auto";
+            await createAgentReply(ticket.id, { message: trimmed });
         } catch (err) {
             setError(err.message);
+            setReply(trimmed);
         } finally {
             setIsSubmitting(false);
         }
