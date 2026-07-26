@@ -278,8 +278,7 @@ export function ChatWidget({ apiKey }) {
   const [error, setError] = useState("");
   const [unread, setUnread] = useState(0);
 
-  // Email capture — set once the backend asks for it via websocket, and
-  // once a ticket already has an email on file we never ask again.
+  const [isAgentHandling, setIsAgentHandling] = useState(false);
   const [needsEmail, setNeedsEmail] = useState(false);
   const [hasEmail, setHasEmail] = useState(false);
   const [emailInput, setEmailInput] = useState("");
@@ -312,6 +311,9 @@ export function ChatWidget({ apiKey }) {
       });
       clearAiWaitTimeout();
       setIsWaitingForAI(false);
+      if (data.message.sender_type === "agent") {
+        setIsAgentHandling(true);
+      }
     }
     if (data.type === "ticket_update" && data.status) {
       setTicketStatus(data.status);
@@ -366,6 +368,7 @@ export function ChatWidget({ apiKey }) {
       setTicketStatus(ticket.status);
       setHasEmail(Boolean(ticket.customer_email));
       setNeedsEmail(Boolean(ticket.needs_email));
+      setIsAgentHandling(Boolean(ticket.is_agent_handling));
     } catch {
       localStorage.removeItem(STORAGE_KEY);
     } finally {
@@ -388,6 +391,7 @@ export function ChatWidget({ apiKey }) {
       setTicketStatus(ticket.status);
       setHasEmail(Boolean(ticket.customer_email));
       setNeedsEmail(Boolean(ticket.needs_email));
+      setIsAgentHandling(Boolean(ticket.is_agent_handling));
       setFirstMessage("");
       if (firstMessageRef.current) firstMessageRef.current.style.height = "auto";
     } catch (err) {
@@ -421,11 +425,13 @@ export function ChatWidget({ apiKey }) {
     setNewMessage("");
     if (textareaRef.current) textareaRef.current.style.height = "auto";
 
-    setIsWaitingForAI(true);
-    clearAiWaitTimeout();
-    aiTimeoutRef.current = setTimeout(() => {
-      setIsWaitingForAI(false);
-    }, AI_REPLY_TIMEOUT_MS);
+    if (!isAgentHandling) {
+      setIsWaitingForAI(true);
+      clearAiWaitTimeout();
+      aiTimeoutRef.current = setTimeout(() => {
+        setIsWaitingForAI(false);
+      }, AI_REPLY_TIMEOUT_MS);
+    }
 
     setIsSubmitting(true);
     try {
@@ -502,6 +508,7 @@ export function ChatWidget({ apiKey }) {
     setHasEmail(false);
     setEmailInput("");
     setEmailError("");
+    setIsAgentHandling(false);
   }
 
   const isReplyBoxDisabled = isSubmitting || isWaitingForAI || needsEmail;

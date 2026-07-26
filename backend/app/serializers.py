@@ -209,6 +209,7 @@ class CustomerTicketDetailSerializer(serializers.ModelSerializer):
             "priority",
             "category",
             "is_new",
+            "is_agent_handling",
             "customer_email",
             "needs_email",
             "created_at",

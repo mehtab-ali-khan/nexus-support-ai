@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { createArticle, deleteArticle, listArticles, updateArticle } from "../api/knowledgeBase.js";
 import { EmptyState, formatDateTime } from "../components/shared/ui.jsx";
 
-const TEST_WEBSITE_URL = import.meta.env.VITE_TEST_WEBSITE_URL;
-
 function IndexStatusBadge({ status }) {
     if (status === "ready") return null;
 
