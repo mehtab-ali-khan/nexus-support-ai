@@ -2,58 +2,32 @@
 
 from django.core.management.base import BaseCommand
 from app.models import AIModelPricing
+from app.ai.pricing import PRICING
 
-PRICES = [
-    {
-        "provider": AIModelPricing.Provider.GOOGLE,
-        "model_name": "gemini-3.1-flash-lite",
-        "input_price_per_1k": "0.00025",  # $0.25 per 1M input tokens
-        "output_price_per_1k": "0.0015",  # $1.50 per 1M output tokens
-    },
-    {
-        "provider": AIModelPricing.Provider.GOOGLE,
-        "model_name": "gemini-2.5-flash-lite",
-        "input_price_per_1k": "0.0001",  # $0.10 per 1M input tokens
-        "output_price_per_1k": "0.0004",  # $0.40 per 1M output tokens
-    },
-    {
-        "provider": AIModelPricing.Provider.GOOGLE,
-        "model_name": "gemini-2.5-flash",
-        "input_price_per_1k": "0.0003",  # $0.30 per 1M input tokens
-        "output_price_per_1k": "0.0025",  # $2.50 per 1M output tokens
-    },
-    {
-        "provider": AIModelPricing.Provider.GOOGLE,
-        "model_name": "gemini-embedding-001",
-        "input_price_per_1k": "0.00015",  # $0.15 per 1M input tokens
-        "output_price_per_1k": "0.0",  # embeddings have no output cost
-    },
-    {
-        "provider": AIModelPricing.Provider.OPENAI,
-        "model_name": "gpt-4o-mini",
-        "input_price_per_1k": "0.00015",  # $0.15 per 1M input tokens
-        "output_price_per_1k": "0.0006",  # $0.60 per 1M output tokens
-    },
-    {
-        "provider": AIModelPricing.Provider.ANTHROPIC,
-        "model_name": "claude-haiku-4-5-20251001",
-        "input_price_per_1k": "0.001",  # $1.00 per 1M input tokens
-        "output_price_per_1k": "0.005",  # $5.00 per 1M output tokens
-    },
-]
+PROVIDER_MAP = {
+    "google": AIModelPricing.Provider.GOOGLE,
+    "openai": AIModelPricing.Provider.OPENAI,
+    "anthropic": AIModelPricing.Provider.ANTHROPIC,
+}
 
 
 class Command(BaseCommand):
-    help = "Seeds or updates AIModelPricing rows with current known provider prices."
+    help = (
+        "Mirrors app/ai/pricing.py into the AIModelPricing table, purely "
+        "for admin visibility/reporting. The real cost calculation reads "
+        "pricing.py directly, not this table - run this after editing "
+        "pricing.py to keep the admin view in sync."
+    )
 
     def handle(self, *args, **options):
-        for entry in PRICES:
+        for (provider_key, model_name), prices in PRICING.items():
+            provider = PROVIDER_MAP[provider_key]
             pricing, created = AIModelPricing.objects.update_or_create(
-                provider=entry["provider"],
-                model_name=entry["model_name"],
+                provider=provider,
+                model_name=model_name,
                 defaults={
-                    "input_price_per_1k": entry["input_price_per_1k"],
-                    "output_price_per_1k": entry["output_price_per_1k"],
+                    "input_price_per_1k": prices["input_price_per_1k"],
+                    "output_price_per_1k": prices["output_price_per_1k"],
                     "is_active": True,
                 },
             )

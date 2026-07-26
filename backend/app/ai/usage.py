@@ -3,8 +3,9 @@
 import logging
 from decimal import Decimal
 
-from ..models import AIModelPricing, AIUsageLog
+from ..models import AIUsageLog
 from .base import TokenUsage
+from .pricing import get_pricing
 
 logger = logging.getLogger(__name__)
 
@@ -13,26 +14,25 @@ CURRENT_PROVIDER = AIUsageLog.Provider.GOOGLE
 
 def _calculate_cost(*, provider, model_name, usage: TokenUsage) -> Decimal:
     """
-    Looks up the currently active price for this model and calculates
-    the real dollar cost of this one call. Returns 0 if no active
-    pricing exists yet, rather than crashing the whole log attempt -
-    you'll still see the row (with 0 cost) and can spot it's missing
-    a price in the admin.
+    Looks up the price for this model from the static pricing table (no DB
+    call - see ai/pricing.py) and calculates the real dollar cost of this
+    one call. Returns 0 if no pricing is defined yet, rather than crashing
+    the whole log attempt - you'll still see the row (with 0 cost) and can
+    spot it's missing a price in the logs.
     """
-    try:
-        pricing = AIModelPricing.objects.get(
-            provider=provider, model_name=model_name, is_active=True
-        )
-    except AIModelPricing.DoesNotExist:
+    pricing = get_pricing(provider, model_name)
+
+    if pricing is None:
         logger.warning(
-            "No active pricing found for %s/%s - logging usage with cost=0",
+            "No pricing defined for %s/%s - logging usage with cost=0. "
+            "Add it to app/ai/pricing.py.",
             provider,
             model_name,
         )
         return Decimal("0")
 
-    input_cost = (Decimal(usage.input_tokens) / 1000) * pricing.input_price_per_1k
-    output_cost = (Decimal(usage.output_tokens) / 1000) * pricing.output_price_per_1k
+    input_cost = (Decimal(usage.input_tokens) / 1000) * pricing["input_price_per_1k"]
+    output_cost = (Decimal(usage.output_tokens) / 1000) * pricing["output_price_per_1k"]
     return input_cost + output_cost
 
 
