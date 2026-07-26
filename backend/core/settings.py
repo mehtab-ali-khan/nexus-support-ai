@@ -199,3 +199,11 @@ LOGGING = {
         },
     },
 }
+
+# =================================
+# EMAIL (Resend)
+# =================================
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY")
+NOTIFICATION_FROM_EMAIL = os.environ.get(
+    "NOTIFICATION_FROM_EMAIL", "notifications@resolvio.dev"
+)

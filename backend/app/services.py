@@ -8,6 +8,7 @@ from .ai.answering import answer_question
 from .ai.indexing import index_article
 from .ai.usage import log_ai_usage
 from .models import KnowledgeBaseArticle, Message, Ticket, AIUsageLog
+from .notifications.email import send_ticket_reply_email
 
 logger = logging.getLogger(__name__)
 channel_layer = get_channel_layer()
@@ -287,6 +288,9 @@ def add_agent_reply(*, ticket, message):
             },
         },
     )
+
+    if ticket.customer_email:
+        send_ticket_reply_email(to_email=ticket.customer_email, ticket_id=ticket.id)
 
     return created_message
 
