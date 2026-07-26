@@ -290,8 +290,11 @@ def add_agent_reply(*, ticket, message):
     )
 
     if ticket.customer_email:
-        send_ticket_reply_email(to_email=ticket.customer_email, ticket_id=ticket.id)
-
+        send_ticket_reply_email(
+            to_email=ticket.customer_email,
+            ticket_id=ticket.id,
+            company_name=ticket.company.name,
+        )
     return created_message
 
 
