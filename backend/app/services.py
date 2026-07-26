@@ -82,17 +82,8 @@ def _attempt_ai_reply(*, ticket, customer_message):
         logger.exception("AI reply attempt failed for ticket #%s", ticket.id)
         return
 
-    log_ai_usage(
-        company=ticket.company,
-        ticket=ticket,
-        message=customer_message,
-        model_name=outcome.question_embedding_model,
-        purpose=AIUsageLog.Purpose.EMBEDDING,
-        usage=outcome.question_embedding_usage,
-    )
-
     if outcome.requires_escalation:
-        # Internal draft — the AI's real attempt, agent-eyes-only.
+        # Internal draft, the AI's real attempt, agent-eyes-only.
         draft_message = Message.objects.create(
             ticket=ticket,
             sender_type=Message.SenderType.AI,
@@ -101,6 +92,14 @@ def _attempt_ai_reply(*, ticket, customer_message):
             ai_confidence=outcome.confidence,
         )
 
+        log_ai_usage(
+            company=ticket.company,
+            ticket=ticket,
+            message=draft_message,
+            model_name=outcome.question_embedding_model,
+            purpose=AIUsageLog.Purpose.EMBEDDING,
+            usage=outcome.question_embedding_usage,
+        )
         log_ai_usage(
             company=ticket.company,
             ticket=ticket,
@@ -152,6 +151,14 @@ def _attempt_ai_reply(*, ticket, customer_message):
             ai_confidence=outcome.confidence,
         )
 
+        log_ai_usage(
+            company=ticket.company,
+            ticket=ticket,
+            message=customer_message_row,
+            model_name=outcome.question_embedding_model,
+            purpose=AIUsageLog.Purpose.EMBEDDING,
+            usage=outcome.question_embedding_usage,
+        )
         log_ai_usage(
             company=ticket.company,
             ticket=ticket,

@@ -214,10 +214,10 @@ class AIModelPricing(models.Model):
 
 class AIUsageLog(models.Model):
     class Purpose(models.TextChoices):
-        ANSWER_GENERATION = "answer_generation", "Answer generated after Gate 1 passed"
-        EMBEDDING = "embedding", "Embedding a Help Article chunk for search"
+        ANSWER_GENERATION = "answer_generation", "Answer generation"
+        EMBEDDING = "embedding", "Embedding a question"
 
-    Provider = AIModelPricing.Provider  # reuse the same provider choices
+    Provider = AIModelPricing.Provider
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
