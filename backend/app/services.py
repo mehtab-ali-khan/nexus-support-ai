@@ -74,6 +74,14 @@ def create_ticket_with_message(*, company, message):
 
 
 def _attempt_ai_reply(*, ticket, customer_message):
+
+    if ticket.is_agent_handling:
+        logger.info(
+            "Skipping AI reply: agent is already handling ticket_id=%s",
+            ticket.id,
+        )
+        return
+
     question = customer_message.body
 
     try:
@@ -125,8 +133,7 @@ def _attempt_ai_reply(*, ticket, customer_message):
             },
         )
 
-        # Customer-visible message — a generic "connecting you" text,
-        # not the AI's raw (unconfident) attempt.
+        # Customer-visible message, a generic "connecting you" text.
         customer_message_row = Message.objects.create(
             ticket=ticket,
             sender_type=Message.SenderType.AI,
@@ -241,6 +248,10 @@ def add_agent_reply(*, ticket, message):
         sender_type=Message.SenderType.AGENT,
         body=message,
     )
+
+    if not ticket.is_agent_handling:
+        ticket.is_agent_handling = True
+        ticket.save(update_fields=["is_agent_handling"])
 
     logger.info(
         "Agent reply stored: ticket_id=%s message_id=%s",

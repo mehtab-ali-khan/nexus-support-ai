@@ -104,6 +104,7 @@ class Ticket(models.Model):
     )
     is_new = models.BooleanField(default=True)
     is_starred = models.BooleanField(default=False)
+    is_agent_handling = models.BooleanField(default=False)  # ← add this
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     search_vector = SearchVectorField(null=True, editable=False)
