@@ -45,6 +45,16 @@ services:
     restart: unless-stopped
     ports:
       - "6379:6379"
-
+      
+  widget-static:
+    build:
+      context: ./frontend
+      dockerfile: widget.Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
 volumes:
   postgres_data:
